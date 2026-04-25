@@ -133,7 +133,7 @@ Use these credentials to test the application:
 
 ### Field Agent Account
 - **Username**: `agent`
-- **Password**: `agent123`
+- **Password**: `securepass@123`
 
 ## API Endpoints
 
@@ -231,7 +231,7 @@ Use these credentials to test the application:
 # Build production bundle
 pnpm build
 
-# Deploy to Vercel, Netlify, or any static hosting
+# Deployed to Vercel
 ```
 
 ## Troubleshooting
