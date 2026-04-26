@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: smartseason-backend
+    runtime: python
+    region: oregon             
+    plan: free                 
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn backend.wsgi:application"   # ← 'backend' matches your ROOT_URLCONF = 'backend.urls'
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true     # ← Render auto-generates a secure key
+      - key: DEBUG
+        value: "False"
+      - key: PYTHON_VERSION
+        value: "3.14.4"         # ← pin your Python version explicitly
+      - key: DATABASE_URL
+        fromDatabase:
+          name: smartseason-db
+          property: connectionString
+
+databases:
+  - name: smartseason-db
+    databaseName: smartseason
+    user: smartseason_user
+    region: oregon              # ← must match the service region above
+    plan: free                  # ← free tier: 1GB storage, expires after 90 days
