@@ -124,7 +124,7 @@ SIMPLE_JWT = {
 }
 
 # ─── CORS ────────────────────────────────────────────────────────────────────
-#CORS_ALLOW_ALL_ORIGINS = DEBUG   ← True locally, False in production
+CORS_ALLOW_ALL_ORIGINS = FALSE   #← True locally, False in production
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
@@ -134,5 +134,5 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https://.*-nyaboke-dev1s-projects\.vercel\.app$",  # ← covers ALL your Vercel deployments
+    r"^https://.*\.vercel\.app$",  # ← covers ALL your Vercel deployments
 ]
