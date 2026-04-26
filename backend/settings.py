@@ -128,5 +128,5 @@ CORS_ALLOW_ALL_ORIGINS = DEBUG   # ← True locally, False in production
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://your-frontend.vercel.app",   # ← replace with your actual Vercel URL
+    "https://frontend-five-ochre-9am22t6yit.vercel.app/",   # ← replace with your actual Vercel URL
 ]
