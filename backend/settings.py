@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from corsheaders.defaults import default_headers
 import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -123,10 +124,15 @@ SIMPLE_JWT = {
 }
 
 # ─── CORS ────────────────────────────────────────────────────────────────────
-CORS_ALLOW_ALL_ORIGINS = DEBUG  # ← True locally, False in production
+#CORS_ALLOW_ALL_ORIGINS = DEBUG   ← True locally, False in production
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://frontend-n38sp7005-nyaboke-dev1s-projects.vercel.app",  # ← replace with your actual Vercel URL
+]
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*-nyaboke-dev1s-projects\.vercel\.app$",  # ← covers ALL your Vercel deployments
 ]
