@@ -1,14 +1,14 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL + '/api';
+const API_URL = import.meta.env.VITE_API_URL + "/api";
 axios.defaults.baseURL = API_URL;
 
 const setAuthToken = (token: string | null) => {
   if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   } else {
-    delete axios.defaults.headers.common['Authorization'];
+    delete axios.defaults.headers.common["Authorization"];
   }
 };
 interface User {
@@ -28,11 +28,13 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const API_URL = import.meta.env.VITE_API_URL + '/api';
+  const API_URL = import.meta.env.VITE_API_URL + "/api";
 
   // -----------------------------
   // INIT AUTH (runs on refresh)
@@ -42,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const initAuth = async () => {
-    const token = localStorage.getItem('access_token');
+    const token = localStorage.getItem("access_token");
 
     if (!token) {
       setLoading(false);
@@ -52,8 +54,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       await fetchUser(token);
     } catch (error) {
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
       setUser(null);
     } finally {
       setLoading(false);
@@ -79,26 +81,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // -----------------------------
   const login = async (username: string, password: string): Promise<User> => {
     try {
-      console.log('Sending login request to /token/');
-      const response = await axios.post(`${API_URL}/token/`, {
+      console.log("Sending login request to /token/");
+      const response = await axios.post("/token/", {
         username,
         password,
       });
-      console.log('Token response:', response.data);
+      console.log("Token response:", response.data);
 
       const { access, refresh } = response.data;
 
-      localStorage.setItem('access_token', access);
-      localStorage.setItem('refresh_token', refresh);
+      localStorage.setItem("access_token", access);
+      localStorage.setItem("refresh_token", refresh);
 
-      console.log('Fetching user with token');
+      console.log("Fetching user with token");
       const user = await fetchUser(access);
-      console.log('Fetched user:', user);
+      console.log("Fetched user:", user);
 
       return user;
-    } catch (error) {
-      console.error('Login API error:', error);
-      throw new Error('Login failed');
+    } catch (error: unknown) {
+      console.error("Login API error:", error);
+
+      if (axios.isAxiosError(error)) {
+        const response = error.response;
+        const message =
+          response?.data?.detail ||
+          response?.data?.message ||
+          (response?.status === 401
+            ? "Incorrect username or password."
+            : undefined);
+
+        throw new Error(
+          message || "Login failed. Please check your credentials."
+        );
+      }
+
+      throw new Error("Login failed. Please check your credentials.");
     }
   };
 
@@ -106,8 +123,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // LOGOUT
   // -----------------------------
   const logout = () => {
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     setUser(null);
   };
 
@@ -132,7 +149,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within AuthProvider');
+    throw new Error("useAuth must be used within AuthProvider");
   }
   return context;
 };
